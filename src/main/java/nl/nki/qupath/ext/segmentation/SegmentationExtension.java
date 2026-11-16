@@ -22,8 +22,8 @@ public class SegmentationExtension implements QuPathExtension {
 
     private static final Logger logger = LoggerFactory.getLogger(SegmentationExtension.class);
 
-    static final String NAME = "NKI Segmentation";
-    private static final String DESCRIPTION = "Segmentation tools (NKI) - development version";
+    static final String NAME = "CellposeMixer";
+    private static final String DESCRIPTION = "Interactive channel mixing for Cellpose segmentation of multiplexed images (NKI)";
     private static final Version QUPATH_VERSION = Version.parse("v0.7.0");
 
     private boolean isInstalled = false;
@@ -42,13 +42,14 @@ public class SegmentationExtension implements QuPathExtension {
             if (cellposeProblems.isEmpty())
                 logger.info("{}: Cellpose setup OK", NAME);
             else
-                logger.warn("{}: Cellpose setup problems:\n{}", NAME, String.join("\n", cellposeProblems));        });
+                logger.warn("{}: Cellpose setup problems:\n{}", NAME, String.join("\n", cellposeProblems));
+        });
 
         nl.nki.qupath.ext.segmentation.ui.MixerPrefs.addToPreferencePane(qupath);
 
         var menu = qupath.getMenu("Extensions>" + NAME, true);
 
-        var mixerItem = new MenuItem("CellposeMixer…");
+        var mixerItem = new MenuItem("Open CellposeMixer…");
         mixerItem.setOnAction(e -> {
             if (mixerWindow == null)
                 mixerWindow = new CellposeMixerWindow(qupath);
@@ -60,40 +61,9 @@ public class SegmentationExtension implements QuPathExtension {
         checkItem.setOnAction(e -> Dialogs.showMessageDialog(NAME, CellposeCheck.summary()));
         menu.getItems().add(checkItem);
 
-        var helloItem = new MenuItem("Image info");
-        helloItem.setOnAction(e -> showImageInfo(qupath));
-        menu.getItems().add(helloItem);
-
         var aboutItem = new MenuItem("About (build info)");
         aboutItem.setOnAction(e -> Dialogs.showInfoNotification(NAME, buildInfo()));
         menu.getItems().add(aboutItem);
-    }
-
-    private static void showImageInfo(QuPathGUI qupath) {
-        var imageData = qupath.getImageData();
-        if (imageData == null) {
-            Dialogs.showWarningNotification(NAME, "Hello! Open an image to see its info.");
-            return;
-        }
-        var server = imageData.getServer();
-        var cal = server.getPixelCalibration();
-        var hierarchy = imageData.getHierarchy();
-
-        String pixelSize = cal.hasPixelSizeMicrons()
-                ? String.format("%.4f x %.4f µm", cal.getPixelWidthMicrons(), cal.getPixelHeightMicrons())
-                : "unknown";
-
-        String msg = String.join("\n",
-                "Image: " + server.getMetadata().getName(),
-                "Size: " + server.getWidth() + " x " + server.getHeight() + " px",
-                "Channels: " + server.nChannels(),
-                "Pixel size: " + pixelSize,
-                "Annotations: " + hierarchy.getAnnotationObjects().size(),
-                "Detections: " + hierarchy.getDetectionObjects().size(),
-                "",
-                buildInfo());
-        logger.info("Image info:\n{}", msg);
-        Dialogs.showMessageDialog(NAME, msg);
     }
 
     /** Version + build timestamp, stamped by Gradle (see build.gradle.kts). */

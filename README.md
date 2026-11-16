@@ -1,22 +1,14 @@
-# qupath-extension-segmentation
+# CellposeMixer
 
-Segmentation extension for [QuPath](https://qupath.github.io) 0.7 (NKI). Based on the
-[QuPath extension template](https://github.com/qupath/qupath-extension-template).
+A [QuPath](https://qupath.github.io) extension for segmenting cells in multiplexed immunofluorescence images (such as CODEX) with Cellpose.
 
-## Build
-Requires a Java 25 JDK (found automatically by Gradle).
-```powershell
-.\scripts\dev.ps1 build
-```
-The jar is written to `build/libs/`. Drag it onto QuPath, or copy it into your QuPath extensions folder.
+Cellpose takes only two channels: a nucleus channel and a cytoplasm/membrane channel. With dozens of markers you have to choose which ones to combine and how to scale them. CellposeMixer lets you do that interactively: tick the channels for each role, set their intensity ranges, see the combined image live, and run Cellpose on your annotations.
 
-## Release
-Push a version tag, e.g. `git tag v0.2.0` then `git push origin v0.2.0`. GitHub Actions builds the extension and
-publishes `qupath-extension-segmentation-0.2.0-all.jar` as a release. Tags like `v0.2.0-rc1` become pre-releases.
+## Installation
 
-## Develop
-```powershell
-.\scripts\dev.ps1 run -Kill     # build, deploy, (re)start QuPath
-.\scripts\dev.ps1 debug -Kill   # same, with a Java debugger on port 5005
-```
-In VS Code, use the **Attach to QuPath** launch configuration. See [CLAUDE.md](CLAUDE.md) for details.
+Requires QuPath 0.7 and the [BIOP Cellpose extension](https://github.com/BIOP/qupath-extension-cellpose) with a Cellpose 3 environment.
+
+- **Via the NKI catalog (recommended):** in QuPath, open *Extensions → Manage extensions → Manage extension catalogs*, add `https://github.com/BioImaging-NKI/qupath-nki-catalog`, then install CellposeMixer. QuPath will tell you when updates are available.
+- **Manually:** download the `.jar` from [Releases](https://github.com/BioImaging-NKI/CellposeMixer/releases) and drag it onto QuPath.
+
+Then open *Extensions → CellposeMixer → Open CellposeMixer…*.

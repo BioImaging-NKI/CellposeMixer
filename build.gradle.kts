@@ -8,12 +8,12 @@ plugins {
 }
 
 qupathExtension {
-    name = "qupath-extension-segmentation"
+    name = "CellposeMixer"
     group = "nl.nki.qupath"
     // Release builds (GitHub workflow) pass -PreleaseVersion=x.y.z, taken from the git tag vx.y.z
     version = providers.gradleProperty("releaseVersion").getOrElse("0.1.0-SNAPSHOT")
-    description = "Segmentation extension for QuPath (NKI)"
-    automaticModule = "nl.nki.qupath.extension.segmentation"
+    description = "Interactive channel mixing for Cellpose segmentation of multiplexed images in QuPath (NKI)"
+    automaticModule = "nl.nki.qupath.extension.cellposemixer"
 }
 
 dependencies {

@@ -26,8 +26,8 @@ $ProjectDir    = Split-Path -Parent $PSScriptRoot
 $QuPathDir     = 'D:\Software\Qupath\QuPath-0.7.0'
 $ExtensionsDir = 'D:\Software\Qupath\Extensions_v07\extensions'
 $Jdk25         = 'C:\Program Files\Eclipse Adoptium\jdk-25.0.2.10-hotspot'
-$JarPattern    = 'qupath-extension-segmentation-*-all.jar'
-$DeployedName  = 'qupath-extension-segmentation.jar'   # fixed name -> never two versions side by side
+$JarPattern    = 'CellposeMixer-*-all.jar'
+$DeployedName  = 'CellposeMixer.jar'   # fixed name -> never two versions side by side
 # Keep Gradle caches inside the project (not in C:\Users\...\.gradle)
 $env:GRADLE_USER_HOME = Join-Path $ProjectDir '.gradle-home'
 # ------------------------------------------------------------------------------
@@ -59,6 +59,12 @@ function Invoke-Build {
     } finally { Pop-Location }
 }
 
+function Get-OurJars {
+    # Current name (CellposeMixer*.jar) and the old one (qupath-extension-segmentation*.jar)
+    Get-ChildItem $ExtensionsDir -File |
+        Where-Object { $_.Name -like 'CellposeMixer*.jar' -or $_.Name -like 'qupath-extension-segmentation*.jar' }
+}
+
 function Invoke-Deploy {
     Invoke-Build
     Stop-QuPathIfRunning
@@ -66,7 +72,7 @@ function Invoke-Deploy {
            Sort-Object LastWriteTime -Descending | Select-Object -First 1
     if (-not $jar) { throw "No jar matching $JarPattern in build\libs" }
     # Remove any older copies (other names/versions) of this extension
-    Get-ChildItem $ExtensionsDir -Filter 'qupath-extension-segmentation*.jar' -File | Remove-Item -Force
+    Get-OurJars | Remove-Item -Force
     Copy-Item $jar.FullName (Join-Path $ExtensionsDir $DeployedName) -Force
     Write-Host "== Deployed $($jar.Name) -> $ExtensionsDir\$DeployedName" -ForegroundColor Green
 }
@@ -116,6 +122,6 @@ switch ($Command) {
     'debug'    { Invoke-Deploy; Start-QuPathDebug }
     'undeploy' {
         Stop-QuPathIfRunning
-        Get-ChildItem $ExtensionsDir -Filter 'qupath-extension-segmentation*.jar' -File | Remove-Item -Force -Verbose
+        Get-OurJars | Remove-Item -Force -Verbose
     }
 }

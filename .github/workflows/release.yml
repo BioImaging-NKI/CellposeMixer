@@ -34,7 +34,7 @@ jobs:
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
-          echo "JAR=build/libs/qupath-extension-segmentation-$VERSION-all.jar" >> "$GITHUB_ENV"
+          echo "JAR=build/libs/CellposeMixer-$VERSION-all.jar" >> "$GITHUB_ENV"
           echo "Releasing version $VERSION"
 
       - name: Build and test
