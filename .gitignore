@@ -64,3 +64,7 @@ cellpose_mixer/
 
 # Logs and crash files (QuPath console output can contain image/project names)
 *.log
+
+# Local notes for Claude Code: never commit (contain local paths)
+CLAUDE.md
+docs/PLAN.md
