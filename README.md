@@ -10,6 +10,10 @@ Requires a Java 25 JDK (found automatically by Gradle).
 ```
 The jar is written to `build/libs/`. Drag it onto QuPath, or copy it into your QuPath extensions folder.
 
+## Release
+Push a version tag, e.g. `git tag v0.2.0` then `git push origin v0.2.0`. GitHub Actions builds the extension and
+publishes `qupath-extension-segmentation-0.2.0-all.jar` as a release. Tags like `v0.2.0-rc1` become pre-releases.
+
 ## Develop
 ```powershell
 .\scripts\dev.ps1 run -Kill     # build, deploy, (re)start QuPath

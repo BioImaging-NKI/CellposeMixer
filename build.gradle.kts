@@ -10,7 +10,8 @@ plugins {
 qupathExtension {
     name = "qupath-extension-segmentation"
     group = "nl.nki.qupath"
-    version = "0.1.0-SNAPSHOT"
+    // Release builds (GitHub workflow) pass -PreleaseVersion=x.y.z, taken from the git tag vx.y.z
+    version = providers.gradleProperty("releaseVersion").getOrElse("0.1.0-SNAPSHOT")
     description = "Segmentation extension for QuPath (NKI)"
     automaticModule = "nl.nki.qupath.extension.segmentation"
 }
@@ -28,9 +29,17 @@ dependencies {
     testImplementation(libs.bundles.qupath)
     testImplementation(libs.junit)
     testRuntimeOnly("org.junit.platform:junit-platform-launcher") // version from the JUnit BOM; required by Gradle 9
-    // Real JavaFX jars (platform classifier) for UI tests such as ChannelRowFxTest
+    // Real JavaFX jars (platform classifier) for UI tests such as ChannelRowFxTest.
+    // UI tests are skipped on headless machines (e.g. GitHub Actions Linux runners).
+    val os = System.getProperty("os.name").lowercase()
+    val arch = System.getProperty("os.arch").lowercase()
+    val fxClassifier = when {
+        os.contains("win") -> "win"
+        os.contains("mac") -> if (arch == "aarch64") "mac-aarch64" else "mac"
+        else -> if (arch == "aarch64") "linux-aarch64" else "linux"
+    }
     for (m in listOf("base", "graphics", "controls"))
-        testImplementation("org.openjfx:javafx-$m:25.0.2:win")
+        testImplementation("org.openjfx:javafx-$m:25.0.2:$fxClassifier")
 }
 
 // Stamp the build time into the jar so we can confirm in QuPath that the newest build is loaded
