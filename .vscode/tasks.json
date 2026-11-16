@@ -1,0 +1,30 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "QuPath: build",
+            "type": "shell",
+            "command": "powershell -ExecutionPolicy Bypass -File scripts/dev.ps1 build",
+            "group": { "kind": "build", "isDefault": true },
+            "problemMatcher": []
+        },
+        {
+            "label": "QuPath: run (build+deploy+start)",
+            "type": "shell",
+            "command": "powershell -ExecutionPolicy Bypass -File scripts/dev.ps1 run -Kill",
+            "problemMatcher": []
+        },
+        {
+            "label": "QuPath: debug (build+deploy+start)",
+            "type": "shell",
+            "command": "powershell -ExecutionPolicy Bypass -File scripts/dev.ps1 debug -Kill",
+            "problemMatcher": []
+        },
+        {
+            "label": "QuPath: undeploy",
+            "type": "shell",
+            "command": "powershell -ExecutionPolicy Bypass -File scripts/dev.ps1 undeploy -Kill",
+            "problemMatcher": []
+        }
+    ]
+}
